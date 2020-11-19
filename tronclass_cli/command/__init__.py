@@ -2,10 +2,12 @@ from argparse import ArgumentParser
 
 
 class Command:
-    name = None
+    middlewares = []
 
-    def __init__(self, parser: ArgumentParser):
+    def __init__(self, parser: ArgumentParser, middlewares):
         self.parser = parser
+        self.middlewares = middlewares
+        self.ctx = {}
         self.sub_parsers = None
         self.init_parser()
 
@@ -15,13 +17,11 @@ class Command:
     def add_sub_command(self, name: str, sub_command_class):
         if self.sub_parsers is None:
             self.sub_parsers = self.parser.add_subparsers()
-        sub_parser = self.sub_parsers.add_parser(name)
-        obj = sub_command_class(sub_parser)
+        middlewares = [middleware() for middleware in sub_command_class.middlewares]
+        sub_parser = self.sub_parsers.add_parser(name, parents=[middleware.parser for middleware in middlewares])
+        obj = sub_command_class(sub_parser, middlewares)
         return obj
 
-    def sub_command(self, name):
-        def sub_command_decorator(sub_command_class):
-            self.add_sub_command(name, sub_command_class)
-            return sub_command_class
-
-        return sub_command_decorator
+    def exec(self, args):
+        for middleware in self.middlewares:
+            middleware.exec(args, self.ctx)
