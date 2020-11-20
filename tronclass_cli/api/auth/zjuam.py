@@ -2,7 +2,7 @@ import requests
 import rsa
 from bs4 import BeautifulSoup
 
-from api.auth import AuthProvider, AuthError
+from tronclass_cli.api.auth import AuthProvider, AuthError
 
 PUB_KEY_URL = 'https://zjuam.zju.edu.cn/cas/v2/getPubKey'
 LOGIN_URL = 'https://zjuam.zju.edu.cn/cas/login'
@@ -16,7 +16,7 @@ def rsa_encrypt(message, pub_key):
 
 
 class ZjuamAuthProvider(AuthProvider):
-    name = 'zju'
+    desc = 'ZJU Unified Identity Authentication'
 
     def __init__(self):
         super().__init__()
@@ -47,4 +47,4 @@ class ZjuamAuthProvider(AuthProvider):
         cookies = self.session.cookies
         if '_pc0' not in cookies:
             raise AuthError()
-        return cookies
+        return self.session

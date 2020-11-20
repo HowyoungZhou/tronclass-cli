@@ -1,5 +1,5 @@
 class AuthProvider:
-    name = None
+    desc = None
 
     def __init__(self):
         pass
