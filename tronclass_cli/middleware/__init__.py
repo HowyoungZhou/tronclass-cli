@@ -1,6 +1,8 @@
+import os
 from argparse import ArgumentParser
+from pathlib import Path
 
-from tronclass_cli.config import config
+from tronclass_cli.middleware.config import load_config
 
 
 class Context:
@@ -22,6 +24,9 @@ class Context:
 class Middleware:
     name = None
     middleware_classes = []
+    default_root = Path.home() / '.tronclass'
+    config_path = Path(os.getenv('TRONCLASS_CLI_CONFIG_FILE') or default_root / 'config.json')
+    config = load_config(config_path)
 
     def __init__(self, parser: ArgumentParser, ctx: Context):
         self._parser = parser
@@ -31,7 +36,7 @@ class Middleware:
 
     def init_parser(self):
         self._init_parser()
-        self._parser.set_defaults(__middleware=self, **config.get_section(self.name).to_dict())
+        self._parser.set_defaults(__middleware=self, **self.config.get_section(self.name).to_dict())
 
     def _init_parser(self):
         pass
