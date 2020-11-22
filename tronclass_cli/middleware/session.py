@@ -25,14 +25,18 @@ def login(user_id):
 
 
 class SessionMiddleware(Middleware):
-    def init_parser(self):
-        self.parser.add_argument('--user-id', help='user id used to login')
+    name = 'session'
 
-    def exec(self, args, ctx):
-        session_files = config.sessions_dir.glob(f'{args.user_id}.session' if args.user_id is not None else '*.session')
+    def _init_parser(self):
+        group = self._parser.add_argument_group(self.name)
+        group.add_argument('--user-id', help='user id used to login')
+
+    def _exec(self, args):
+        session_files = config.sessions_dir.glob(
+            f'{args.user_id}-{config.provider}.session' if args.user_id is not None else f'*-{config.provider}.session')
         session_files = list(session_files)
         if len(session_files) > 0:
             with open(session_files[0], 'rb') as fs:
-                ctx['session'] = pickle.load(fs)
+                self._ctx.session = pickle.load(fs)
         else:
-            ctx['session'] = login(args.user_id)
+            self._ctx.session = login(args.user_id)

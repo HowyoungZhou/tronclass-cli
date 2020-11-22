@@ -1,17 +1,13 @@
-from argparse import ArgumentParser
-
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.session import SessionMiddleware
 
 
 class TodoCommand(Command):
-    middlewares = [SessionMiddleware]
+    name = 'todo'
+    middleware_classes = [SessionMiddleware]
 
-    def __init__(self, parser: ArgumentParser, middlewares):
-        super(TodoCommand, self).__init__(parser, middlewares)
+    def _init_parser(self):
+        pass
 
-    def init_parser(self):
-        super(TodoCommand, self).init_parser()
-
-    def exec(self, args):
-        super(TodoCommand, self).exec(args)
+    def _exec(self, args):
+        pass

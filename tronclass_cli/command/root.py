@@ -3,9 +3,13 @@ from tronclass_cli.command import Command
 
 
 class RootCommand(Command):
-    def init_parser(self):
-        super(RootCommand, self).init_parser()
-        self.parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + tronclass_cli.__version__)
+    name = 'root'
 
-    def exec(self, args):
-        self.parser.print_help()
+    def _init_parser(self):
+        self._parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + tronclass_cli.__version__)
+
+    def _exec(self, args):
+        self._parser.print_help()
+
+    def parse_args(self, *args, **kwargs):
+        return self._parser.parse_args(*args, **kwargs)

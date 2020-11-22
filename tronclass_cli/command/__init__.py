@@ -1,27 +1,17 @@
-from argparse import ArgumentParser
+from tronclass_cli.middleware import Middleware
 
 
-class Command:
+class Command(Middleware):
+    name = None
     middlewares = []
 
-    def __init__(self, parser: ArgumentParser, middlewares):
-        self.parser = parser
-        self.middlewares = middlewares
-        self.ctx = {}
-        self.sub_parsers = None
-        self.init_parser()
-
-    def init_parser(self):
-        self.parser.set_defaults(__command=self)
+    def __init__(self, parser, ctx):
+        super().__init__(parser, ctx)
+        self._sub_parsers = None
 
     def add_sub_command(self, name: str, sub_command_class):
-        if self.sub_parsers is None:
-            self.sub_parsers = self.parser.add_subparsers()
-        middlewares = [middleware() for middleware in sub_command_class.middlewares]
-        sub_parser = self.sub_parsers.add_parser(name, parents=[middleware.parser for middleware in middlewares])
-        obj = sub_command_class(sub_parser, middlewares)
+        if self._sub_parsers is None:
+            self._sub_parsers = self._parser.add_subparsers()
+        sub_parser = self._sub_parsers.add_parser(name)
+        obj = sub_command_class(sub_parser, self._ctx)
         return obj
-
-    def exec(self, args):
-        for middleware in self.middlewares:
-            middleware.exec(args, self.ctx)
