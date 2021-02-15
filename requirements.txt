@@ -1,0 +1,2 @@
+tabulate[widechars]
+keyring~=22.0.1
