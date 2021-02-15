@@ -45,3 +45,20 @@ class Api:
             if page >= data['pages']:
                 break
             page += 1
+
+    def get_homework(self, course_id, conditions={}, page_size=20):
+        page = 1
+        while True:
+            params = {
+                'conditions': json.dumps(conditions),
+                'page': page,
+                'page_size': page_size
+            }
+            res = self._session.get(self.get_api_url(f'api/courses/{course_id}/homework-activities'), params=params)
+            res.raise_for_status()
+            data = res.json()
+            yield from data['homework_activities']
+
+            if page >= data['pages']:
+                break
+            page += 1
