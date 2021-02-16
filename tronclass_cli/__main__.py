@@ -14,3 +14,4 @@ root_command.add_sub_command('homework', HomeworkCommand)
 
 args = root_command.parse_args()
 args.__middleware.exec(args)
+args.__middleware.dispose()

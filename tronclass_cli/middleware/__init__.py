@@ -48,3 +48,11 @@ class Middleware:
 
     def _exec(self, args):
         pass
+
+    def dispose(self):
+        self._dispose()
+        for middleware in reversed(self._middlewares):
+            middleware.dispose()
+
+    def _dispose(self):
+        pass

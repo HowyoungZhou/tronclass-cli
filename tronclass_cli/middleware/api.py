@@ -13,8 +13,9 @@ class ApiMiddleware(Middleware):
 
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
-        group.add_argument('--api-url', help=f'base url of TronClass API, supported shortcuts: {", ".join(api_urls.keys())}')
+        group.add_argument('--api-url',
+                           help=f'base url of TronClass API, supported shortcuts: {", ".join(api_urls.keys())}')
 
     def _exec(self, args):
         api_url = api_urls.get(args.api_url, args.api_url)
-        self._ctx.api = Api(api_url, self._ctx.session)
+        self._ctx.api = Api(api_url, self._ctx.user_name, self._ctx.cache, self._ctx.session)

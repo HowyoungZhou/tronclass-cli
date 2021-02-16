@@ -3,7 +3,6 @@ from tronclass_cli.middleware import Middleware
 
 class Command(Middleware):
     name = None
-    middlewares = []
 
     def __init__(self, parser, ctx):
         super().__init__(parser, ctx)
