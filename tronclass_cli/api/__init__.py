@@ -13,55 +13,54 @@ class Api:
         self._session = session
         self._cache = cache
 
-    def get_api_url(self, path):
+    def _get_api_url(self, path):
         return urljoin(self._base_url, path)
 
+    def _api_call(self, path, method='GET', **kwargs):
+        kwargs.setdefault('allow_redirects', True)
+        return self._session.request(method, self._get_api_url(path), **kwargs)
+
     def get_todo(self):
-        return self._session.get(self.get_api_url('api/todos')).json()['todo_list']
+        return self._api_call('api/todos').json()['todo_list']
 
     def get_user_id(self):
         cache_key = f'api.users.{self._user_name}'
         cached = self._cache.get(cache_key)
         if cached is not None:
             return cached
-        html = self._session.get(self.get_api_url('user/index')).content
+        html = self._api_call('user/index').content
         soup = BeautifulSoup(html, 'html.parser')
         id = soup.find(id='userId').get('value')
         self._cache[cache_key] = id
         return id
 
-    def get_courses(self, conditions={}, fields='id,name', page_size=20):
+    def _get_pages(self, path, params, data_key, page_size=20):
+        page = 1
+        while True:
+            params = {
+                'page': page,
+                'page_size': page_size,
+                **params
+            }
+            res = self._api_call(path, params=params)
+            res.raise_for_status()
+            data = res.json()
+            yield from data[data_key]
+
+            if page >= data['pages']:
+                break
+            page += 1
+
+    def get_courses(self, conditions={}, fields='id,name'):
         user_id = self.get_user_id()
-        page = 1
-        while True:
-            params = {
-                'conditions': json.dumps(conditions),
-                'fields': fields,
-                'page': page,
-                'page_size': page_size
-            }
-            res = self._session.get(self.get_api_url(f'api/users/{user_id}/courses'), params=params)
-            res.raise_for_status()
-            data = res.json()
-            yield from data['courses']
+        params = {
+            'conditions': json.dumps(conditions),
+            'fields': fields,
+        }
+        return self._get_pages(f'api/users/{user_id}/courses', params, 'courses')
 
-            if page >= data['pages']:
-                break
-            page += 1
-
-    def get_homework(self, course_id, conditions={}, page_size=20):
-        page = 1
-        while True:
-            params = {
-                'conditions': json.dumps(conditions),
-                'page': page,
-                'page_size': page_size
-            }
-            res = self._session.get(self.get_api_url(f'api/courses/{course_id}/homework-activities'), params=params)
-            res.raise_for_status()
-            data = res.json()
-            yield from data['homework_activities']
-
-            if page >= data['pages']:
-                break
-            page += 1
+    def get_homework(self, course_id, conditions={}):
+        params = {
+            'conditions': json.dumps(conditions),
+        }
+        return self._get_pages(f'api/courses/{course_id}/homework-activities', params, 'homework_activities')
