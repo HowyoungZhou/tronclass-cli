@@ -5,8 +5,8 @@ from tronclass_cli.middleware.api import ApiMiddleware
 from tronclass_cli.utils import dict_select, process_table_data
 
 
-class HomeworkCommand(Command):
-    name = 'courses'
+class HomeworkListCommand(Command):
+    name = 'courses.list'
     middleware_classes = [ApiMiddleware]
 
     def _init_parser(self):
@@ -35,7 +35,7 @@ class HomeworkCommand(Command):
                  'rubric_instance_id,score_percentage,score_published,sort,start_time,submission_closed,' \
                  'submission_started,submit_by_group,submit_times,submitted,submitted_status,syllabus_id,' \
                  'teaching_unit_id,title,type,updated_at,uploads,user_submit_count '
-        default_fields = 'id,title,deadline'
+        default_fields = 'id,title,deadline,submitted,score'
         self._parser.add_argument('--fields', default=default_fields,
                                   help=f'fields to display, default fields: {default_fields}, supported fields: {fields}')
 

@@ -2,11 +2,18 @@ from tabulate import tabulate
 
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.utils import flatten_dict, unflatten_fields, dict_select, process_table_data
+from tronclass_cli.utils import unflatten_fields, process_table_data
 
 
 class CoursesCommand(Command):
     name = 'courses'
+
+    def _exec(self, args):
+        self._parser.print_help()
+
+
+class CoursesListCommand(Command):
+    name = 'courses.list'
     middleware_classes = [ApiMiddleware]
 
     def _init_parser(self):
