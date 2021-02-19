@@ -12,4 +12,8 @@ class TodoCommand(Command):
         pass
 
     def _exec(self, args):
-        print(tabulate(self._ctx.api.get_todo(), headers='keys'))
+        todo = list(self._ctx.api.get_todo())
+        if len(todo) == 0:
+            print('No tasks.')
+        else:
+            print(tabulate(todo, headers='keys'))
