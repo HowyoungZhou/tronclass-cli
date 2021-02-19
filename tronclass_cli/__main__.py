@@ -12,6 +12,12 @@ root_command.add_sub_command('todo', TodoCommand)
 root_command.add_sub_command('courses', CoursesCommand)
 root_command.add_sub_command('homework', HomeworkCommand)
 
-args = root_command.parse_args()
-args.__middleware.exec(args)
-args.__middleware.dispose()
+
+def main():
+    args = root_command.parse_args()
+    args.__middleware.exec(args)
+    args.__middleware.dispose()
+
+
+if __name__ == '__main__':
+    main()
