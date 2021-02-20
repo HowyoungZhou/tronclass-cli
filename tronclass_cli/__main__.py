@@ -25,6 +25,7 @@ def main():
         args.__middleware.dispose()
     except Exception as ex:
         interact.error(f'fatal: {ex}')
+        raise
 
 
 if __name__ == '__main__':

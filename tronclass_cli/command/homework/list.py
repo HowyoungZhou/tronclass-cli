@@ -1,13 +1,11 @@
-from tabulate import tabulate
-
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.utils import dict_select, process_table_data
+from tronclass_cli.middleware.table import TableMiddleware
 
 
 class HomeworkListCommand(Command):
     name = 'courses.list'
-    middleware_classes = [ApiMiddleware]
+    middleware_classes = [ApiMiddleware, TableMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('course_id')
@@ -45,5 +43,4 @@ class HomeworkListCommand(Command):
         if len(homework) == 0:
             print('No homework.')
         else:
-            homework = [process_table_data(hw, fields) for hw in homework]
-            print(tabulate(homework, headers='keys'))
+            self._ctx.print_table(homework, fields)

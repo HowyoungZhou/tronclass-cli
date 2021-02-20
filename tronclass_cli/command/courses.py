@@ -1,8 +1,7 @@
-from tabulate import tabulate
-
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.utils import unflatten_fields, process_table_data
+from tronclass_cli.middleware.table import TableMiddleware
+from tronclass_cli.utils import unflatten_fields
 
 
 class CoursesCommand(Command):
@@ -14,7 +13,7 @@ class CoursesCommand(Command):
 
 class CoursesListCommand(Command):
     name = 'courses.list'
-    middleware_classes = [ApiMiddleware]
+    middleware_classes = [ApiMiddleware, TableMiddleware]
 
     def _init_parser(self):
         fields = 'id,name,course_code,department(id,name),grade(id,name),klass(id,name),course_type,cover,' \
@@ -33,5 +32,4 @@ class CoursesListCommand(Command):
         if len(courses) == 0:
             print('No courses.')
         else:
-            courses = [process_table_data(course, fields) for course in courses]
-            print(tabulate(courses, headers='keys'))
+            self._ctx.print_table(courses, fields)

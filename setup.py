@@ -26,7 +26,7 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": [
-            "tc = tronclass_cli.__main__:main"
+            "tcc = tronclass_cli.__main__:main"
         ]
     },
     python_requires='>=3.5',
