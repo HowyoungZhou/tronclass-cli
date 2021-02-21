@@ -5,6 +5,19 @@ def dict_select(dict, keys):
     return {k: dict.get(k) for k in keys}
 
 
+def nested_dict_select(dict, keys):
+    res = {}
+    for key in keys:
+        dst = res
+        src = dict
+        *layers, last = key.split('.')
+        for k in layers:
+            dst = dst.setdefault(k, {})
+            src = src.setdefault(k, {})
+        dst[last] = src.get(last)
+    return res
+
+
 def flatten_dict(d, separator='.'):
     out = {}
     for key, val in d.items():

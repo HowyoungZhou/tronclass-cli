@@ -65,7 +65,7 @@ class Api:
         }
         return self._get_pages(f'api/courses/{course_id}/homework-activities', params, 'homework_activities')
 
-    def get_activities(self, course_id, fields='id,title,type'):
+    def get_activities(self, course_id, fields=''):
         params = {
             'fields': fields,
         } if fields != '' else None

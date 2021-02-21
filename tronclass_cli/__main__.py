@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 
+from tronclass_cli.command.activities.view import ActivitiesViewCommand
 from tronclass_cli.command.root import RootCommand
 from tronclass_cli.command.todo import TodoCommand
 from tronclass_cli.command.courses import CoursesCommand, CoursesListCommand
@@ -17,6 +18,7 @@ courses_command.add_sub_command('list', CoursesListCommand, aliases=['l', 'ls'],
 
 activities_command = root_command.add_sub_command('activities', ActivitiesCommand, aliases=['a'])
 activities_command.add_sub_command('list', ActivitiesListCommand, aliases=['l', 'ls'], help='list activities')
+activities_command.add_sub_command('view', ActivitiesViewCommand, aliases=['v'], help='view an activity')
 
 homework_command = root_command.add_sub_command('homework', HomeworkCommand, aliases=['h', 'hw'])
 homework_command.add_sub_command('list', HomeworkListCommand, aliases=['l', 'ls'], help='list homework')
