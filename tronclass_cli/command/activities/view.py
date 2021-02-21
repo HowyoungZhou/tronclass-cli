@@ -1,13 +1,13 @@
+from yaml import dump, CDumper as Dumper
+
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.middleware.table import TableMiddleware
-from tronclass_cli.utils import unflatten_fields, nested_dict_select
-from yaml import dump, CLoader as Loader, CDumper as Dumper
+from tronclass_cli.utils import nested_dict_select
 
 
 class ActivitiesViewCommand(Command):
     name = 'activities.view'
-    middleware_classes = [ApiMiddleware, TableMiddleware]
+    middleware_classes = [ApiMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('course_id')

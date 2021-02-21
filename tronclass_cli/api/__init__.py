@@ -72,3 +72,10 @@ class Api:
         res = self._api_call(f'api/courses/{course_id}/activities', params=params)
         res.raise_for_status()
         return res.json()['activities']
+
+    def get_document(self, ref_id, preview=False):
+        res = self._api_call(f'https://courses.zju.edu.cn/api/uploads/reference/document/{ref_id}/url',
+                             params={'preview': str(preview).lower()})
+        res.raise_for_status()
+        url = res.json()['url']
+        return self._session.get(url, stream=True)

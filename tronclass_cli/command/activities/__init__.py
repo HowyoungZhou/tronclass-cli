@@ -1,6 +1,8 @@
 from tronclass_cli.command import Command
 
 from .list import ActivitiesListCommand
+from .view import ActivitiesViewCommand
+from .download import ActivitiesDownloadCommand
 
 
 class ActivitiesCommand(Command):
