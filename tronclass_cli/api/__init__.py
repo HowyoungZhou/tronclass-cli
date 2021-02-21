@@ -64,3 +64,11 @@ class Api:
             'conditions': json.dumps(conditions),
         }
         return self._get_pages(f'api/courses/{course_id}/homework-activities', params, 'homework_activities')
+
+    def get_activities(self, course_id, fields='id,title,type'):
+        params = {
+            'fields': fields,
+        } if fields != '' else None
+        res = self._api_call(f'api/courses/{course_id}/activities', params=params)
+        res.raise_for_status()
+        return res.json()['activities']

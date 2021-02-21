@@ -11,10 +11,13 @@ def flatten_dict(d, separator='.'):
         if isinstance(val, dict):
             val = [val]
         if isinstance(val, list):
-            for subdict in val:
-                deeper = flatten_dict(subdict).items()
-                for key2, val2 in deeper:
-                    out.setdefault(key + separator + key2, []).append(val2)
+            for child in val:
+                if isinstance(child, dict):
+                    deeper = flatten_dict(child)
+                    for key2, val2 in deeper.items():
+                        out.setdefault(key + separator + key2, []).append(val2)
+                else:
+                    out.setdefault(key, []).append(child)
         else:
             out[key] = val
     return out
