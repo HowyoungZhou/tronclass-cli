@@ -9,10 +9,13 @@ class CachedItem:
 
 
 class Cache:
-    def __init__(self, cache_file):
+    def __init__(self, cache_file, force_update=False):
         self._shelve = shelve.open(str(cache_file))
+        self._force_update = force_update
 
     def get(self, key, default=None):
+        if self._force_update:
+            return default
         item = self._shelve.get(key)
         if not item:
             return default
