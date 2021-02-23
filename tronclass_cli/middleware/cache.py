@@ -1,7 +1,7 @@
-import shelve
 from pathlib import Path
 
 from tronclass_cli.middleware import Middleware
+from tronclass_cli.utils.cache import Cache
 
 
 class CacheMiddleware(Middleware):
@@ -14,7 +14,7 @@ class CacheMiddleware(Middleware):
     def _exec(self, args):
         args.cache_dir.mkdir(0o700, True, True)
         if 'cache' not in self._ctx:
-            self._ctx.cache = shelve.open(str(args.cache_dir / 'cache'))
+            self._ctx.cache = Cache(args.cache_dir / 'cache')
 
     def _dispose(self):
         self._ctx.cache.close()
