@@ -2,7 +2,7 @@ from yaml import dump, CDumper as Dumper
 
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.utils import nested_dict_select
+from tronclass_cli.utils import nested_dict_select, iter_select_where
 
 
 class ActivitiesViewCommand(Command):
@@ -19,6 +19,8 @@ class ActivitiesViewCommand(Command):
     def _exec(self, args):
         fields = args.fields.split(',')
         activities = self._ctx.api.get_activities(args.course_id)
-        for activity in activities:
-            if args.activity_id == str(activity['id']):
-                print(dump(nested_dict_select(activity, fields), Dumper=Dumper))
+        activity = iter_select_where(activities, lambda x: args.activity_id == str(x['id']))
+        if activity:
+            print(dump(nested_dict_select(activity, fields), Dumper=Dumper, allow_unicode=True))
+        else:
+            raise KeyError(f'activity {args.activity_id} not found in course {args.course_id}')

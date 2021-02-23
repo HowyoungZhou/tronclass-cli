@@ -1,6 +1,13 @@
 from dateutil.parser import isoparse
 
 
+def iter_select_where(iter, predicate):
+    for it in iter:
+        if predicate(it):
+            return it
+    return None
+
+
 def dict_select(dict, keys):
     return {k: dict.get(k) for k in keys}
 
