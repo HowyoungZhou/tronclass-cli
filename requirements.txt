@@ -1,9 +1,9 @@
-tabulate[widechars]~=0.8.7
+tabulate[widechars]~=0.8.9
 keyring~=22.0.1
-requests~=2.23.0
-rsa~=4.6
+requests~=2.25.1
+rsa~=4.7.1
 beautifulsoup4~=4.9.3
 python-dateutil~=2.8.1
-lxml~=4.6.1
+lxml~=4.6.2
 pyyaml~=5.4.1
-tqdm~=4.46.0
+tqdm~=4.57.0
