@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
 from tronclass_cli.command.activities.view import ActivitiesViewCommand
+from tronclass_cli.command.cache import CacheCommand, CacheClearCommand
 from tronclass_cli.command.root import RootCommand
 from tronclass_cli.command.todo import TodoCommand
 from tronclass_cli.command.courses import CoursesCommand, CoursesListCommand
@@ -24,6 +25,9 @@ activities_command.add_sub_command('download', ActivitiesDownloadCommand, aliase
 
 homework_command = root_command.add_sub_command('homework', HomeworkCommand, aliases=['h', 'hw'])
 homework_command.add_sub_command('list', HomeworkListCommand, aliases=['l', 'ls'], help='list homework')
+
+cache_command = root_command.add_sub_command('cache', CacheCommand)
+cache_command.add_sub_command('clear', CacheClearCommand, help='clear the cache data')
 
 
 def main():
