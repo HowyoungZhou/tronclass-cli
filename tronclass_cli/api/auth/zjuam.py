@@ -28,7 +28,7 @@ class ZjuamAuthProvider(AuthProvider):
         e = int(pub['exponent'], base=16)
         return rsa.PublicKey(n, e)
 
-    def login(self, user_id: str, password: str):
+    def login(self, username: str, password: str):
         res = self.session.get(LOGIN_URL).text
         soup = BeautifulSoup(res, 'lxml')
         execution = soup.findAll('input', attrs={'name': 'execution'})[0]['value']
@@ -37,7 +37,7 @@ class ZjuamAuthProvider(AuthProvider):
         encrypted_pass = rsa_encrypt(password.encode(), pub_key).hex()
 
         form = {
-            'username': user_id,
+            'username': username,
             'password': encrypted_pass,
             'authcode': '',
             'execution': execution,

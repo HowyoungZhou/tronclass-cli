@@ -19,21 +19,21 @@ class SessionMiddleware(Middleware):
 
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
-        group.add_argument('--user-id', help='user id used to login')
-        group.add_argument('--provider', default='zju',
+        group.add_argument('--username', help='username for authentication')
+        group.add_argument('--auth-provider', default='zju',
                            help=f'authentication provider, available providers: {", ".join(get_all_auth_providers().keys())}')
         group.add_argument('--no-save-credentials', dest='save_credentials', action='store_false',
                            help='do not save the credentials')
 
     def _exec(self, args):
-        user_id = args.user_id or interact.prompt_input('User ID')
-        self._ctx.user_name = user_id
-        self._ctx.session = self._ctx.cache.get(f'session.{user_id}')
+        username = args.username or interact.prompt_input('Username')
+        self._ctx.username = username
+        self._ctx.session = self._ctx.cache.get(f'session.{username}')
         if self._ctx.session is not None:
             return
-        password = keyring.get_password(SERVICE_NAME, user_id) or getpass()
+        password = keyring.get_password(SERVICE_NAME, username) or getpass()
         if args.save_credentials:
-            keyring.set_password(SERVICE_NAME, user_id, password)
-        auth_provider = get_auth_provider(args.provider)()
-        self._ctx.session = auth_provider.login(user_id, password)
-        self._ctx.cache.set(f'session.{user_id}', self._ctx.session, SESSION_LIFETIME)
+            keyring.set_password(SERVICE_NAME, username, password)
+        auth_provider = get_auth_provider(args.auth_provider)()
+        self._ctx.session = auth_provider.login(username, password)
+        self._ctx.cache.set(f'session.{username}', self._ctx.session, SESSION_LIFETIME)

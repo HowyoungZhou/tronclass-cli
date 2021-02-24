@@ -18,4 +18,4 @@ class ApiMiddleware(Middleware):
 
     def _exec(self, args):
         api_url = api_urls.get(args.api_url, args.api_url)
-        self._ctx.api = Api(api_url, self._ctx.user_name, self._ctx.cache, self._ctx.session)
+        self._ctx.api = Api(api_url, self._ctx.username, self._ctx.cache, self._ctx.session)

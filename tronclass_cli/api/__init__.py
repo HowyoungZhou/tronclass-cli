@@ -14,7 +14,7 @@ def cached(key, lifetime=None):
         def cached_func(*args, **kwargs):
             call_args = inspect.getcallargs(func, *args, **kwargs)
             self = call_args['self']
-            cache_key = f'api.{self._user_name}.{key.format(**call_args)}'
+            cache_key = f'api.{self._username}.{key.format(**call_args)}'
             value = self._cache.get(cache_key)
             if value is not None:
                 return value
@@ -30,9 +30,9 @@ def cached(key, lifetime=None):
 
 
 class Api:
-    def __init__(self, base_url, user_name, cache: shelve.Shelf, session: Session):
+    def __init__(self, base_url, username, cache: shelve.Shelf, session: Session):
         self._base_url = base_url
-        self._user_name = user_name
+        self._username = username
         self._session = session
         self._cache = cache
 
