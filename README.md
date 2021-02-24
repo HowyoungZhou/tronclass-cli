@@ -1,5 +1,7 @@
 # Tronclass CLI
 
+[![Upload Python Package](https://github.com/HowyoungZhou/tronclass-cli/actions/workflows/python-publish.yml/badge.svg)](https://github.com/HowyoungZhou/tronclass-cli/actions/workflows/python-publish.yml) [![PyPI version](README.assets/tronclass-cli.svg)](https://pypi.org/project/tronclass-cli/)
+
 Tronclass CLI 可以让您使用命令行完成 Tronclass 平台有关的各项工作。
 
 支持的平台：
