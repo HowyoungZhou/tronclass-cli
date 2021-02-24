@@ -11,9 +11,9 @@ class ActivitiesDownloadCommand(Command):
     middleware_classes = [ApiMiddleware]
 
     def _init_parser(self):
-        self._parser.add_argument('reference_id')
-        self._parser.add_argument('output_file', type=Path)
-        self._parser.add_argument('--preview', action='store_true', help=f'download the preview file')
+        self._parser.add_argument('reference_id', help='reference id of the file')
+        self._parser.add_argument('output_file', type=Path, help='path to the output file')
+        self._parser.add_argument('--preview', action='store_true', help='download the preview file')
 
     def _exec(self, args):
         res = self._ctx.api.get_document(args.reference_id, args.preview)

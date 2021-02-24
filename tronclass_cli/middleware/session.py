@@ -4,7 +4,7 @@ from pathlib import Path
 
 import keyring
 
-from tronclass_cli.api.auth.providers import get_auth_provider
+from tronclass_cli.api.auth.providers import get_auth_provider, get_all_auth_providers
 from tronclass_cli.middleware import Middleware
 from tronclass_cli.middleware.cache import CacheMiddleware
 from tronclass_cli.utils import interact
@@ -20,9 +20,10 @@ class SessionMiddleware(Middleware):
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
         group.add_argument('--user-id', help='user id used to login')
-        group.add_argument('--provider', default='zju')
-        group.add_argument('--no-save-credentials', dest='save_credentials', action='store_false')
-        group.add_argument('--session-dir', type=Path, default=self.default_root / 'sessions')
+        group.add_argument('--provider', default='zju',
+                           help=f'authentication provider, available providers: {", ".join(get_all_auth_providers().keys())}')
+        group.add_argument('--no-save-credentials', dest='save_credentials', action='store_false',
+                           help='do not save the credentials')
 
     def _exec(self, args):
         user_id = args.user_id or interact.prompt_input('User ID')
@@ -35,4 +36,4 @@ class SessionMiddleware(Middleware):
             keyring.set_password(SERVICE_NAME, user_id, password)
         auth_provider = get_auth_provider(args.provider)()
         self._ctx.session = auth_provider.login(user_id, password)
-        self._ctx.cache.set(f'session.{user_id}', self._ctx.session)
+        self._ctx.cache.set(f'session.{user_id}', self._ctx.session, SESSION_LIFETIME)

@@ -9,7 +9,7 @@ class ActivitiesListCommand(Command):
     middleware_classes = [ApiMiddleware, TableMiddleware]
 
     def _init_parser(self):
-        self._parser.add_argument('course_id')
+        self._parser.add_argument('course_id', help='course id')
         default_fields = 'id,title,type'
         self._parser.add_argument('--fields', default=default_fields,
                                   help=f'fields to display, default fields: {default_fields}')

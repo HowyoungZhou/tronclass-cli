@@ -16,15 +16,9 @@ class CoursesListCommand(Command):
     middleware_classes = [ApiMiddleware, TableMiddleware]
 
     def _init_parser(self):
-        fields = 'id,name,course_code,department(id,name),grade(id,name),klass(id,name),course_type,cover,' \
-                 'small_cover,start_date,end_date,is_started,is_closed,academic_year_id,semester_id,credit,' \
-                 'compulsory,second_name,display_name,created_user(id,name),org(is_enterprise_or_organization),' \
-                 'org_id,instructors(id,name,email,avatar_small_url),public_scope,course_attributes(' \
-                 'teaching_class_name,copy_status),audit_status,audit_remark,can_withdraw_course,imported_from,' \
-                 'instructor_assistants(id),allow_clone,team_teachings(id,name,email) '
         default_fields = 'id,name,instructors.name'
         self._parser.add_argument('--fields', default=default_fields,
-                                  help=f'fields to display, default fields: {default_fields}, supported fields: {fields}')
+                                  help=f'fields to display, default fields: {default_fields}')
 
     def _exec(self, args):
         fields = args.fields.split(',')

@@ -12,8 +12,8 @@ class TableMiddleware(Middleware):
 
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
-        group.add_argument('--table-fmt', default='simple')
-        group.add_argument('--date-fmt', default='%c')
+        group.add_argument('--table-fmt', default='simple', help='table format')
+        group.add_argument('--date-fmt', default='%c', help='date format')
 
     def _exec(self, args):
         date_regex = re.compile(r'\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(\.\d+)?([+-][0-2]\d:[0-5]\d|Z)')

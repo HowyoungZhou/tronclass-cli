@@ -14,19 +14,21 @@ parser = ArgumentParser()
 root_command = RootCommand(parser, Context())
 root_command.add_sub_command('todo', TodoCommand, aliases=['t', 'td'], help='view to-do list')
 
-courses_command = root_command.add_sub_command('courses', CoursesCommand, aliases=['c'])
+courses_command = root_command.add_sub_command('courses', CoursesCommand, aliases=['c'], help='manage all courses')
 courses_command.add_sub_command('list', CoursesListCommand, aliases=['l', 'ls'], help='list courses')
 
-activities_command = root_command.add_sub_command('activities', ActivitiesCommand, aliases=['a'])
+activities_command = root_command.add_sub_command('activities', ActivitiesCommand, aliases=['a'],
+                                                  help='manage activities of the courses')
 activities_command.add_sub_command('list', ActivitiesListCommand, aliases=['l', 'ls'], help='list activities')
 activities_command.add_sub_command('view', ActivitiesViewCommand, aliases=['v'], help='view an activity')
 activities_command.add_sub_command('download', ActivitiesDownloadCommand, aliases=['d', 'dl'],
                                    help='download attached files')
 
-homework_command = root_command.add_sub_command('homework', HomeworkCommand, aliases=['h', 'hw'])
+homework_command = root_command.add_sub_command('homework', HomeworkCommand, aliases=['h', 'hw'],
+                                                help='manage homework of the courses')
 homework_command.add_sub_command('list', HomeworkListCommand, aliases=['l', 'ls'], help='list homework')
 
-cache_command = root_command.add_sub_command('cache', CacheCommand)
+cache_command = root_command.add_sub_command('cache', CacheCommand, help='manage the cache data')
 cache_command.add_sub_command('clear', CacheClearCommand, help='clear the cache data')
 
 

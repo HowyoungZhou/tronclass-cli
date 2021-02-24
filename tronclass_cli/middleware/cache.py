@@ -9,8 +9,11 @@ class CacheMiddleware(Middleware):
 
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
-        group.add_argument('--cache-dir', type=Path, default=self.default_root / 'dat')
-        group.add_argument('--force-update', action='store_true')
+        default_dir = self.default_root / 'dat'
+        group.add_argument('--cache-dir', type=Path, default=default_dir,
+                           help=f'path to the cache directory, default: {default_dir}')
+        group.add_argument('--force-update', action='store_true',
+                           help='fetch the data from the server and update the cache')
 
     def _exec(self, args):
         args.cache_dir.mkdir(0o700, True, True)

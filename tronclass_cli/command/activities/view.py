@@ -10,8 +10,8 @@ class ActivitiesViewCommand(Command):
     middleware_classes = [ApiMiddleware]
 
     def _init_parser(self):
-        self._parser.add_argument('course_id')
-        self._parser.add_argument('activity_id')
+        self._parser.add_argument('course_id', help='course id')
+        self._parser.add_argument('activity_id', help='activity id')
         default_fields = 'id,title,type,data,deadline,uploads'
         self._parser.add_argument('--fields', default=default_fields,
                                   help=f'fields to display, default fields: {default_fields}')
