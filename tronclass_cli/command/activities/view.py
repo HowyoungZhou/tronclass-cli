@@ -21,6 +21,6 @@ class ActivitiesViewCommand(Command):
         activities = self._ctx.api.get_activities(args.course_id)
         activity = iter_select_where(activities, lambda x: args.activity_id == str(x['id']))
         if activity:
-            print(dump(nested_dict_select(activity, fields), Dumper=Dumper, allow_unicode=True))
+            print(dump(nested_dict_select(activity, fields), Dumper=Dumper, allow_unicode=True, sort_keys=False))
         else:
             raise KeyError(f'activity {args.activity_id} not found in course {args.course_id}')
