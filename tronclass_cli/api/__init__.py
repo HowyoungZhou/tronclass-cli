@@ -101,3 +101,27 @@ class Api:
         res.raise_for_status()
         url = res.json()['url']
         return self._session.get(url, stream=True)
+
+    def post_uploads(self, name, size, parent_type=None, parent_id=0, is_scorm=False, is_wmpkg=False):
+        data = {
+            "name": name,
+            "size": size,
+            "parent_type": parent_type,
+            "parent_id": parent_id,
+            "is_scorm": is_scorm,
+            "is_wmpkg": is_wmpkg
+        }
+        res = self._api_call(f'api/uploads', 'POST', data=data)
+        res.raise_for_status()
+        return res.json()
+
+    def post_submissions(self, activity_id, uploads, slides=[], comment='', is_draft=False):
+        data = {
+            "comment": comment,
+            "uploads": uploads,
+            "slides": slides,
+            "is_draft": is_draft
+        }
+        res = self._api_call(f'api/course/activities/{activity_id}/submissions', 'POST', data=data)
+        res.raise_for_status()
+        return res.json()
