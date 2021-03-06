@@ -30,10 +30,10 @@ def cached(key, lifetime=None):
 
 
 class Api:
-    def __init__(self, base_url, username, cache: shelve.Shelf, session: Session):
+    def __init__(self, base_url, username, cache, session: Session):
         self._base_url = base_url
         self._username = username
-        self._session = session
+        self.session = session
         self._cache = cache
 
     def _get_api_url(self, path):
@@ -41,7 +41,7 @@ class Api:
 
     def _api_call(self, path, method='GET', **kwargs):
         kwargs.setdefault('allow_redirects', True)
-        return self._session.request(method, self._get_api_url(path), **kwargs)
+        return self.session.request(method, self._get_api_url(path), **kwargs)
 
     @cached('todo', timedelta(hours=6))
     def get_todo(self):
@@ -95,12 +95,17 @@ class Api:
         res.raise_for_status()
         return res.json()['activities']
 
+    def get_activity(self, activity_id):
+        res = self._api_call(f'api/activities/{activity_id}')
+        res.raise_for_status()
+        return res.json()
+
     def get_document(self, ref_id, preview=False):
         res = self._api_call(f'https://courses.zju.edu.cn/api/uploads/reference/document/{ref_id}/url',
                              params={'preview': str(preview).lower()})
         res.raise_for_status()
         url = res.json()['url']
-        return self._session.get(url, stream=True)
+        return self.session.get(url, stream=True)
 
     def post_uploads(self, name, size, parent_type=None, parent_id=0, is_scorm=False, is_wmpkg=False):
         data = {
@@ -111,7 +116,7 @@ class Api:
             "is_scorm": is_scorm,
             "is_wmpkg": is_wmpkg
         }
-        res = self._api_call(f'api/uploads', 'POST', data=data)
+        res = self._api_call(f'api/uploads', 'POST', json=data)
         res.raise_for_status()
         return res.json()
 
@@ -122,6 +127,6 @@ class Api:
             "slides": slides,
             "is_draft": is_draft
         }
-        res = self._api_call(f'api/course/activities/{activity_id}/submissions', 'POST', data=data)
+        res = self._api_call(f'api/course/activities/{activity_id}/submissions', 'POST', json=data)
         res.raise_for_status()
         return res.json()

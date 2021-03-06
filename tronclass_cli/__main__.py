@@ -5,7 +5,7 @@ from tronclass_cli.command.cache import CacheCommand, CacheClearCommand
 from tronclass_cli.command.root import RootCommand
 from tronclass_cli.command.todo import TodoCommand
 from tronclass_cli.command.courses import CoursesCommand, CoursesListCommand
-from tronclass_cli.command.homework import HomeworkCommand, HomeworkListCommand
+from tronclass_cli.command.homework import HomeworkCommand, HomeworkListCommand, HomeworkSubmitCommand
 from tronclass_cli.command.activities import ActivitiesCommand, ActivitiesListCommand, ActivitiesDownloadCommand
 from tronclass_cli.middleware import Context
 from tronclass_cli.utils import interact
@@ -27,6 +27,7 @@ activities_command.add_sub_command('download', ActivitiesDownloadCommand, aliase
 homework_command = root_command.add_sub_command('homework', HomeworkCommand, aliases=['h', 'hw'],
                                                 help='manage homework of the courses')
 homework_command.add_sub_command('list', HomeworkListCommand, aliases=['l', 'ls'], help='list homework')
+homework_command.add_sub_command('submit', HomeworkSubmitCommand, aliases=['s'], help='submit homework')
 
 cache_command = root_command.add_sub_command('cache', CacheCommand, help='manage the cache data')
 cache_command.add_sub_command('clear', CacheClearCommand, help='clear the cache data')
