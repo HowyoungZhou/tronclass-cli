@@ -18,9 +18,9 @@ def rsa_encrypt(message, pub_key):
 class ZjuamAuthProvider(AuthProvider):
     desc = 'ZJU Unified Identity Authentication'
 
-    def __init__(self):
+    def __init__(self, session):
         super().__init__()
-        self.session = requests.Session()
+        self.session = session
 
     def get_pub_key(self):
         pub = self.session.get(PUB_KEY_URL).json()

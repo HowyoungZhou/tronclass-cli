@@ -1,8 +1,8 @@
 from datetime import timedelta
 from getpass import getpass
-from pathlib import Path
 
 import keyring
+from requests import Session
 
 from tronclass_cli.api.auth.providers import get_auth_provider, get_all_auth_providers
 from tronclass_cli.middleware import Middleware
@@ -11,6 +11,7 @@ from tronclass_cli.utils import interact
 
 SERVICE_NAME = 'tronclass'
 SESSION_LIFETIME = timedelta(hours=1)
+DEFAULT_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36'
 
 
 class SessionMiddleware(Middleware):
@@ -24,6 +25,7 @@ class SessionMiddleware(Middleware):
                            help=f'authentication provider, available providers: {", ".join(get_all_auth_providers().keys())}')
         group.add_argument('--no-save-credentials', dest='save_credentials', action='store_false',
                            help='do not save the credentials')
+        group.add_argument('--user-agent', default=DEFAULT_UA, help='user agent sent with requests')
 
     def _exec(self, args):
         username = args.username or interact.prompt_input('Username')
@@ -34,6 +36,9 @@ class SessionMiddleware(Middleware):
         password = keyring.get_password(SERVICE_NAME, username) or getpass()
         if args.save_credentials:
             keyring.set_password(SERVICE_NAME, username, password)
-        auth_provider = get_auth_provider(args.auth_provider)()
+
+        session = Session()
+        session.headers['User-Agent'] = args.user_agent
+        auth_provider = get_auth_provider(args.auth_provider)(session)
         self._ctx.session = auth_provider.login(username, password)
         self._ctx.cache.set(f'session.{username}', self._ctx.session, SESSION_LIFETIME)
