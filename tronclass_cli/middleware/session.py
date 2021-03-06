@@ -14,6 +14,21 @@ SESSION_LIFETIME = timedelta(hours=1)
 DEFAULT_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36'
 
 
+def try_get_password(service_name, username):
+    try:
+        return keyring.get_password(service_name, username)
+    except:
+        return None
+
+
+def try_set_password(service_name, username, password):
+    try:
+        keyring.set_password(service_name, username, password)
+        return True
+    except:
+        return False
+
+
 class SessionMiddleware(Middleware):
     name = 'session'
     middleware_classes = [CacheMiddleware]
@@ -33,9 +48,9 @@ class SessionMiddleware(Middleware):
         self._ctx.session = self._ctx.cache.get(f'session.{username}')
         if self._ctx.session is not None:
             return
-        password = keyring.get_password(SERVICE_NAME, username) or getpass()
+        password = try_get_password(SERVICE_NAME, username) or getpass()
         if args.save_credentials:
-            keyring.set_password(SERVICE_NAME, username, password)
+            try_set_password(SERVICE_NAME, username, password)
 
         session = Session()
         session.headers['User-Agent'] = args.user_agent
