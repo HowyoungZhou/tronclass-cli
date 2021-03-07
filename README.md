@@ -15,7 +15,7 @@ Tronclass CLI 可以让您使用命令行完成 Tronclass 平台有关的各项�
 - 查看课程内容
 - 下载课程资料
 - 查看课程作业
-- *提交课程作业 (WIP)
+- 提交课程作业
 
 ## 安装
 
@@ -36,7 +36,7 @@ pipx install tronclass-cli
 ```json
 {
     "session": {
-        "username": "31xxxxxxxxx", // 您登录时使用的用户名（学号）
+        "username": "31xxxxxxxxx",
         "auth_provider": "zju"
     },
     "api": {
