@@ -8,3 +8,5 @@ lxml~=4.6.2
 pyyaml~=5.4.1
 tqdm~=4.57.0
 requests-toolbelt~=0.9.1
+dbus-python~=1.2.16
+SecretStorage~=3.3.1
