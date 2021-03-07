@@ -13,7 +13,7 @@ class ApiMiddleware(Middleware):
 
     def _init_parser(self):
         group = self._parser.add_argument_group(self.name)
-        group.add_argument('--api-url',
+        group.add_argument('--api-url', default='zju',
                            help=f'base url of TronClass API, supported shortcuts: {", ".join(api_urls.keys())}')
 
     def _exec(self, args):
