@@ -95,6 +95,7 @@ class Api:
         res.raise_for_status()
         return res.json()['activities']
 
+    @cached('activity.{activity_id}', timedelta(hours=6))
     def get_activity(self, activity_id):
         res = self._api_call(f'api/activities/{activity_id}')
         res.raise_for_status()
