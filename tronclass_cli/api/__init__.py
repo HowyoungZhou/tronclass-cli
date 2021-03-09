@@ -1,12 +1,11 @@
 import inspect
 import json
-import shelve
 from datetime import timedelta
 from types import GeneratorType
 from urllib.parse import urljoin
 
-from requests import Session
 from bs4 import BeautifulSoup
+from requests import Session
 
 
 def cached(key, lifetime=None):
@@ -56,12 +55,12 @@ class Api:
     def _get_pages(self, path, params, data_key, page_size=20):
         page = 1
         while True:
-            params = {
+            api_params = {
                 'page': page,
                 'page_size': page_size,
                 **params
             }
-            res = self._api_call(path, params=params)
+            res = self._api_call(path, params=api_params)
             res.raise_for_status()
             data = res.json()
             yield from data[data_key]
