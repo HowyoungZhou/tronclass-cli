@@ -10,6 +10,7 @@ from tqdm import tqdm
 from tronclass_cli.api import Api
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
+from tronclass_cli.utils import interact
 
 
 def zip_files(fp, paths):
@@ -69,8 +70,12 @@ class HomeworkSubmitCommand(Command):
         self._parser.add_argument('--draft', action='store_true', help='submit as a draft')
 
     def _exec(self, args):
-        self._ctx.api.get_activity(args.activity_id)
+        activity = self._ctx.api.get_activity(args.activity_id)
         paths = chain(*args.paths)
+        files = paths if args.compress is None else [args.compress]
+        res = interact.prompt_input(f"Submit file(s) {', '.join(files)} for homework \"{activity['title']}\"? (y/n)")
+        if res != 'y':
+            return
         uploads = []
         if args.compress is not None:
             with TemporaryFile() as fp:
