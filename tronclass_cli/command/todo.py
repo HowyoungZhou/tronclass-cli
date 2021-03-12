@@ -16,6 +16,6 @@ class TodoCommand(Command):
         fields = args.fields.split(',')
         todo = list(self._ctx.api.get_todo())
         if len(todo) == 0:
-            print('No courses.')
+            print('Your to-do list is empty.')
         else:
             self._ctx.print_table(todo, fields)
