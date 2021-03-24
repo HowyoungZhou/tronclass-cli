@@ -71,7 +71,7 @@ class HomeworkSubmitCommand(Command):
 
     def _exec(self, args):
         activity = self._ctx.api.get_activity(args.activity_id)
-        paths = chain(*args.paths)
+        paths = list(chain(*args.paths))
         files = paths if args.compress is None else [args.compress]
         res = interact.prompt_input(f"Submit file(s) {', '.join(files)} for homework \"{activity['title']}\"? (y/n)")
         if res != 'y':
