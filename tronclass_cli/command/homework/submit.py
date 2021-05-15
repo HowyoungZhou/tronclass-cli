@@ -5,12 +5,13 @@ from tempfile import TemporaryFile
 from zipfile import ZipFile
 
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+from rich.prompt import Confirm
 from tqdm import tqdm
 
 from tronclass_cli.api import Api
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
-from tronclass_cli.utils import interact
+from tronclass_cli.middleware.console import ConsoleMiddleware
 
 
 def zip_files(fp, paths):
@@ -60,7 +61,7 @@ def post_file(api: Api, name, fp):
 
 class HomeworkSubmitCommand(Command):
     name = 'courses.submit'
-    middleware_classes = [ApiMiddleware]
+    middleware_classes = [ApiMiddleware, ConsoleMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('activity_id', help='homework activity id')
@@ -70,11 +71,12 @@ class HomeworkSubmitCommand(Command):
         self._parser.add_argument('--draft', action='store_true', help='submit as a draft')
 
     def _exec(self, args):
-        activity = self._ctx.api.get_activity(args.activity_id)
+        with self._ctx.console.status("Fetching homework metadata..."):
+            activity = self._ctx.api.get_activity(args.activity_id)
         paths = list(chain(*args.paths))
         files = paths if args.compress is None else [args.compress]
-        res = interact.prompt_input(f"Submit file(s) {', '.join(files)} for homework \"{activity['title']}\"? (y/n)")
-        if res != 'y':
+        prompt = f"Submit file(s) {', '.join(files)} for homework \"{activity['title']}\"?"
+        if not Confirm.ask(prompt):
             return
         uploads = []
         if args.compress is not None:
@@ -87,4 +89,5 @@ class HomeworkSubmitCommand(Command):
                     raise TypeError('folders are not supported to be uploaded, use --compress to create a zipped file')
                 with open(path, 'rb') as fp:
                     uploads.append(post_file(self._ctx.api, os.path.basename(path), fp))
-        self._ctx.api.post_submissions(args.activity_id, uploads, is_draft=args.draft)
+        with self._ctx.console.status("Submitting homework..."):
+            self._ctx.api.post_submissions(args.activity_id, uploads, is_draft=args.draft)

@@ -4,11 +4,12 @@ from tqdm import tqdm
 
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
+from tronclass_cli.middleware.console import ConsoleMiddleware
 
 
 class ActivitiesDownloadCommand(Command):
     name = 'activities.download'
-    middleware_classes = [ApiMiddleware]
+    middleware_classes = [ApiMiddleware, ConsoleMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('reference_id', help='reference id of the file')
@@ -16,7 +17,8 @@ class ActivitiesDownloadCommand(Command):
         self._parser.add_argument('--preview', action='store_true', help='download the preview file')
 
     def _exec(self, args):
-        res = self._ctx.api.get_document(args.reference_id, args.preview)
+        with self._ctx.console.status("Fetching file metadata..."):
+            res = self._ctx.api.get_document(args.reference_id, args.preview)
         total_size = int(res.headers.get('content-length', 0))
         block_size = 1024
         progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True)

@@ -1,12 +1,13 @@
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
+from tronclass_cli.middleware.console import ConsoleMiddleware
 from tronclass_cli.middleware.table import TableMiddleware
 from tronclass_cli.utils import unflatten_fields
 
 
 class ActivitiesListCommand(Command):
     name = 'activities.list'
-    middleware_classes = [ApiMiddleware, TableMiddleware]
+    middleware_classes = [ApiMiddleware, TableMiddleware, ConsoleMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('course_id', help='course id')
@@ -16,7 +17,8 @@ class ActivitiesListCommand(Command):
 
     def _exec(self, args):
         fields = args.fields.split(',')
-        activities = list(self._ctx.api.get_activities(args.course_id, fields=unflatten_fields(fields)))
+        with self._ctx.console.status("Fetching activities list..."):
+            activities = list(self._ctx.api.get_activities(args.course_id, fields=unflatten_fields(fields)))
         if len(activities) == 0:
             print('No activities.')
         else:

@@ -1,11 +1,12 @@
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
+from tronclass_cli.middleware.console import ConsoleMiddleware
 from tronclass_cli.middleware.table import TableMiddleware
 
 
 class HomeworkListCommand(Command):
     name = 'courses.list'
-    middleware_classes = [ApiMiddleware, TableMiddleware]
+    middleware_classes = [ApiMiddleware, TableMiddleware, ConsoleMiddleware]
 
     def _init_parser(self):
         self._parser.add_argument('course_id', help='course id')
@@ -15,7 +16,8 @@ class HomeworkListCommand(Command):
 
     def _exec(self, args):
         fields = args.fields.split(',')
-        homework = list(self._ctx.api.get_homework(args.course_id))
+        with self._ctx.console.status("Fetching homework list..."):
+            homework = list(self._ctx.api.get_homework(args.course_id))
         if len(homework) == 0:
             print('No homework.')
         else:

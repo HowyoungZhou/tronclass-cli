@@ -1,5 +1,6 @@
 from tronclass_cli.command import Command
 from tronclass_cli.middleware.api import ApiMiddleware
+from tronclass_cli.middleware.console import ConsoleMiddleware
 from tronclass_cli.middleware.table import TableMiddleware
 from tronclass_cli.utils import unflatten_fields
 
@@ -13,7 +14,7 @@ class CoursesCommand(Command):
 
 class CoursesListCommand(Command):
     name = 'courses.list'
-    middleware_classes = [ApiMiddleware, TableMiddleware]
+    middleware_classes = [ApiMiddleware, TableMiddleware, ConsoleMiddleware]
 
     def _init_parser(self):
         default_fields = 'id,name,instructors.name'
@@ -22,7 +23,8 @@ class CoursesListCommand(Command):
 
     def _exec(self, args):
         fields = args.fields.split(',')
-        courses = list(self._ctx.api.get_courses(fields=unflatten_fields(fields)))
+        with self._ctx.console.status("Fetching courses list..."):
+            courses = list(self._ctx.api.get_courses(fields=unflatten_fields(fields)))
         if len(courses) == 0:
             print('No courses.')
         else:
